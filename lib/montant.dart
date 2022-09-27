@@ -55,6 +55,17 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  
+  final _lastWords = ('');
+  
+// Fonction de stockage
+  Future<void> floatingActionButton() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('montant', _lastWords);
+  }
+
+
 class _MyHomePageState extends State<MyHomePage> {
   // Variables
   final SpeechToText _speechToText = SpeechToText();
@@ -140,12 +151,12 @@ class _MyHomePageState extends State<MyHomePage> {
   //Fin Fonction TTS
 final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   
-  final NumbersInput = TextEditingController();
+  final lastWords = TextEditingController();
   
 // Fonction de stockage
   Future<void> AddNumb() async {
     final SharedPreferences prefs = await _prefs;
-    await prefs.setString('text', NumbersInput.text);
+    await prefs.setString('montant', _lastWords);
   }
   //End Functions
   @override
@@ -184,9 +195,9 @@ final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
           size:70,
           ),
           onPressed: () async{
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString('text', NumbersInput.text);
-            print('saved');
+            // final prefs = await SharedPreferences.getInstance();
+            // await prefs.setString('text', _lastWords);
+            // print('saved');
             Navigator.of(context).pushNamed('/pass');
           }
           ),
@@ -197,7 +208,7 @@ final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.mic_none, size:36),
           onPressed: () async {
-          _startListening() {};// Ecoute et Affiche,
+          _startListening();// Ecoute et Affiche,
           },
       ),
       

@@ -50,6 +50,16 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
+  // Variable qui permettra le stockage d'info
+
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final _lastWords = ('');
+// Fonction de stockage
+  Future<void> floatingActionButton() async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('number', _lastWords);
+  }
+
 class _MyHomePageState extends State<MyHomePage> {
   // Variables
   final SpeechToText _speechToText = SpeechToText();
@@ -58,20 +68,12 @@ class _MyHomePageState extends State<MyHomePage> {
   bool StartReading = false;
   double volume = 1.0;
   double rate = 1.0;
-  double pitch = 8.0;
+  double pitch = 1.0;
   String language = 'fr-FR';
   static String _lastWords = '';
   static String  InfoSpeak = ''; 
-  static const defaultFinalTimeout = Duration(seconds: 80);
-  static const _minFinalTimeout = Duration(seconds: 80);
-  // final TextEditingController _pauseForController =
-  //       TextEditingController(text: '30');
-  // final TextEditingController _listenForController =
-  //       TextEditingController(text: '30');
-  
-  // End variables
-
-  //Functions
+  static const defaultFinalTimeout = Duration(seconds: 30);
+  static const _minFinalTimeout = Duration(seconds: 30);
 
   //-Les fonctions de reconnaissance
   @override
@@ -96,8 +98,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void _startListening() async {
     await _speechToText.listen(
       onResult: _onSpeechResult,
-       listenFor: const Duration(seconds:60 ),
-       pauseFor: const Duration(seconds: 3),
+       listenFor: const Duration(seconds:30 ),
+       pauseFor: const Duration(seconds: 30),
        partialResults: true,
        listenMode: ListenMode.confirmation,
       );
@@ -109,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _stopListening() async {
     await _speechToText.stop();
     setState(() {
-      InfoSpeak = 'Parler maintenant';
+      InfoSpeak = 'Appuyez pour parler';
     });
  Speak();
   }
@@ -131,22 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
       tts.speak(text);
     } 
 }
- 
   //Fin Fonction TTS
 
-  //Variable qui permettra le stockage d'info
-
-  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  
-  final NumbersInput = TextEditingController();
-  
-// Fonction de stockage
-  Future<void> AddNumb() async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setString('text', NumbersInput.text);
-  }
   //End Functions
-
 
   @override
   Widget build(BuildContext context) {
@@ -183,10 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
           icon: const Icon(Icons.navigate_next,
           size:70,
           ),
-          onPressed: () async{
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString('text', NumbersInput.text);
-            print('saved');
+          onPressed: () {
             Navigator.of(context).pushNamed('/montant');
           }
           ),
@@ -197,12 +183,9 @@ class _MyHomePageState extends State<MyHomePage> {
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.mic_none, size:36),
           onPressed: () {
-          _startListening() { 
-             
-          };// Ecoute et Affiche,
+          _startListening();// Ecoute et Affiche,
           },
       ),
-      
     );
   }
 }

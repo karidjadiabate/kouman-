@@ -16,6 +16,9 @@ class Pass extends StatelessWidget {
           '/pass': (BuildContext context) => Pass(),
       },
       debugShowCheckedModeBanner:false,
+      theme: ThemeData(
+        primarySwatch: Colors.yellow,
+      ),
       title: appTitle,
       home: Scaffold(
         appBar: AppBar(
